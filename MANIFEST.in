@@ -1,0 +1,9 @@
+recursive-include doc_src *
+recursive-include docs *
+
+recursive-include {{ app_name }}/static *
+recursive-include {{ app_name }}/templates *
+
+include LICENSE
+include README.md
+include *.txt
