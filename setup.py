@@ -30,8 +30,8 @@ def get_readme():
 
 setup(
     name="urgaci",
-    version="0.1a"
-    url="https://bitbucket.org/dries/urgaci"
+    version="0.1a",
+    url="https://bitbucket.org/dries/urgaci",
     author='Dries Desmet',
     author_email='dries@urga.be',
     description=get_desc("urgaci"),
