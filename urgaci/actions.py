@@ -28,5 +28,5 @@ def deploy(appname, branch):
     if branch=="develop":
         appname = appname + "_staging" 
     webappsdir = os.environ.get("URGACI_APPS", os.path.join(os.environ["HOME"], "webapps"))
-    os.environ['GIT_WORK_TREE'] = os.path.join(webappsdir, application)
+    os.environ['GIT_WORK_TREE'] = os.path.join(webappsdir, appname)
     os.system("git checkout -f %s" % branch)
