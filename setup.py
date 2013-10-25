@@ -37,6 +37,7 @@ setup(
     description=get_desc("urgaci"),
     long_description=get_readme(),
     packages=find_packages(),
+    scripts=['deploy', 'create'],
     include_package_data=True,
     install_requires=read_file('requirements.txt'),
     classifiers=[
