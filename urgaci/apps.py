@@ -64,10 +64,19 @@ class WebApplication(object):
         call(["git", "reset", "--hard"])
 
 
+    def install_requirements(self):
+        pippath="pip"
+        if "VIRTUALENV" in os.environ:
+            virtualenv=os.path.join(os.environ.get("WORKON_HOME", os.path.join(os.environ["HOME"], ".virtualenvs")), self.name)
+            pippath=os.path.join(virtualenv, pippath)
+        os.chdir(os.environ["GIT_WORK_TREE"])
+        call([pippath, "install", "--upgrade", "-r", "requirements.txt"])
+
+    
     def deploy(self):
-            """
-            Deploy an application.
-            """
-            self.checkout()
-            dotenv.read_dotenv(os.path.join(os.environ["GIT_WORK_TREE"], ".env"))
-            print os.environ["VIRTUALENV"]
+        """
+        Deploy an application.
+        """
+        self.checkout()
+        dotenv.read_dotenv(os.path.join(os.environ["GIT_WORK_TREE"], ".env"))
+        self.install_requirements()
