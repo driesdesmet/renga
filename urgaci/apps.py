@@ -1,6 +1,3 @@
-"""
-Hooks and script for easy deployment with git.
-"""
 import os
 from subprocess import call
 import dotenv
