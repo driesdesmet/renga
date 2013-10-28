@@ -29,12 +29,12 @@ def get_readme():
 
 
 setup(
-    name="urgaci",
+    name="renga",
     version="0.1a",
-    url="https://bitbucket.org/dries/urgaci",
+    url="https://github.com/driesdesmet/renga",
     author='Dries Desmet',
     author_email='dries@urga.be',
-    description=get_desc("urgaci"),
+    description=get_desc("renga"),
     long_description=get_readme(),
     packages=find_packages(),
     scripts=['deploy', 'create'],
