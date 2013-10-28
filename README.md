@@ -1,1 +1,1 @@
-Hooks and script for easy deployment with git.
+Hooks and scripst for easy deployment with git on a shared host.
