@@ -5,7 +5,7 @@ Script to create a web application on this server. Call this like so:
 """
 import sys
 from optparse import OptionParser
-from urgaci.apps import WebApplication
+from renga.apps import WebApplication
 
 def main():
 

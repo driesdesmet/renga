@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 """
-Continuous deploy script. Call this like so:
-    $ deploy -b develop appname 
+Script to create a web application on this server. Call this like so:
+    $ create -b develop appname 
 """
 import sys
 from optparse import OptionParser
@@ -19,7 +19,7 @@ def main():
         parser.error("Specify exactly 1 argument, %d given." % len(args))
 
     app = WebApplication(args[0], branch=options.branch, staging=options.staging)
-    app.deploy()
+    app.webserver_start()
 
 if __name__ == "__main__":
     main()

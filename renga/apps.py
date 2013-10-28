@@ -1,5 +1,5 @@
 import os
-from subprocess import call, check_call
+import subprocess
 from .helpers import generate_key
 import dotenv
 import getpass
@@ -29,7 +29,7 @@ class WebApplication(object):
         git_work_tree = os.path.join(webappsdir, self.name)
         os.environ["GIT_WORK_TREE"] = git_work_tree
         self.configfile = os.path.join(os.environ["GIT_WORK_TREE"], ".env")
-        # self.read_config()
+        self.read_config()
 
 
     def __str__(self):
@@ -41,7 +41,7 @@ class WebApplication(object):
             dotenv.read_dotenv(self.configfile)
             if "VIRTUALENV" in os.environ:
                 os.environ["PATH"] = ":".join([os.path.join(os.environ["VIRTUALENV"], "bin"), os.environ["PATH"]])
-            return True
+            self.configured = True
         return False
 
 
@@ -61,7 +61,7 @@ class WebApplication(object):
         if answer == "y" or answer == "Y":
             virtualenv = os.path.join(os.environ.get("WORKON_HOME", os.path.join(os.environ["HOME"], ".virtualenvs")), self.name)
             f.write("VIRTUALENV=%s\n" % virtualenv)
-            call(["virtualenv", virtualenv])
+            subprocess.call(["virtualenv", virtualenv])
 
         answer = int(raw_input("LISTEN_ON_PORT: [12345] ") or 12345 )
         f.write("LISTEN_ON_PORT=%d\n" % answer)
@@ -71,7 +71,7 @@ class WebApplication(object):
 
         f.write("DJANGO_SECRET_KEY='%s'\n" % generate_key())
         f.close()
-        self.read_config
+        self.read_config()
 
     
     def initialize(self):
@@ -81,12 +81,13 @@ class WebApplication(object):
         if "webfaction" in socket.gethostname():
             pass
         else:
-            call(["mkdir", "-p", os.environ["GIT_WORK_TREE"]])
+            subprocess.call(["mkdir", "-p", os.environ["GIT_WORK_TREE"]])
 
     
     def _webserver_command(self):
-        return ("gunicorn --log-file=%(logfile)s -b 127.0.0.1:%(port)s -D -w %(workers)s --pid %(pidfile)s %(wsgimodule)s:application" %
-            {'pidfile': os.path.join(os.environ["GIT_WORK_TREE"], "webserver.pid"),
+        return ("gunicorn --chdir=%(chdir)s --log-file=%(logfile)s -b 127.0.0.1:%(port)s -D -w %(workers)s --pid %(pidfile)s %(wsgimodule)s:application" %
+            {'chdir': os.environ["GIT_WORK_TREE"],
+             'pidfile': os.path.join(os.environ["GIT_WORK_TREE"], "webserver.pid"),
              'wsgimodule': self.wsgi_module,
              'port': os.environ["LISTEN_ON_PORT"],
              'workers': os.environ["GUNICORN_WORKERS"],
@@ -99,16 +100,24 @@ class WebApplication(object):
         """
         Starts the webserver that is running the Django instance
         """
-        call(self._webserver_command(), shell=True)
+        command = self._webserver_command()
+        print command
+        subprocess.check_call(command, shell=True)
 
 
+    def webserver_stop(self):
+        command = "kill $(cat %s)" % os.path.join(os.environ["GIT_WORK_TREE"], "webserver.pid")
+        print command
+        subprocess.check_call(command, shell=True)
+
+    
     def webserver_restart(self):
         """
         Restarts the webserver that is running the Django instance
         """
         try:
-            check_call("kill -HUP $(cat %s)" % os.path.join(os.environ["GIT_WORK_TREE"], "webserver.pid"), shell=True)
-        except:
+            self.webserver_stop()
+        except subprocess.CalledProcessError:
             self.webserver_start()
 
 
@@ -123,8 +132,10 @@ class WebApplication(object):
             raise ApplicationDirDoesNotExistError()
         
         os.chdir(os.environ["GIT_WORK_TREE"])
-        call(["git", "checkout", "-f", self.branch])
-        call(["git", "reset", "--hard"])
+        subprocess.call(["git", "checkout", "-f", self.branch])
+        subprocess.call(["git", "reset", "--hard"])
+        # Delete all .pyc files to make sure nothing stays behind. They are not tracked by git, so a git reset doesn't get rid of them.
+        subprocess.call('find . -name "*.pyc" -exec rm -f {} \;', shell=True)
 
 
     def install_requirements(self):
@@ -134,7 +145,7 @@ class WebApplication(object):
         del(os.environ["GIT_WORK_TREE"])
         del(os.environ["GIT_DIR"])
 
-        call("pip install --upgrade -r %s" % os.path.join(gwt, "requirements.txt"), shell=True)
+        subprocess.call("pip install --upgrade -r %s" % os.path.join(gwt, "requirements.txt"), shell=True)
         # Now restore the environment to what it was.
         os.environ["GIT_WORK_TREE"] = gwt
         os.environ["GIT_DIR"] = gitdir
@@ -145,7 +156,7 @@ class WebApplication(object):
         Deploy an application.
         """
         print self.configfile
-        if self.read_config():
+        if self.configured:
             self.checkout()
             self.install_requirements()
             self.webserver_restart()
