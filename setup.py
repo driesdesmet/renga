@@ -42,7 +42,6 @@ setup(
     install_requires=read_file('requirements.txt'),
     classifiers=[
         'License :: OSI Approved :: Apache Software License',
-        'Framework :: Django',
         'Intended Audience :: Developers',
         'Programming Language :: Python',
         'Environment :: Web Environment',
