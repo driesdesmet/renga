@@ -1,0 +1,16 @@
+#!/usr/bin/env python2.7
+
+import sys
+import os
+from subprocess import call
+
+oldrev, newrev, refname = sys.stdin.read().split()
+branch = refname[refname.rfind("/")+1:]
+if branch == "develop":
+    staging=True
+
+from renga.apps import WebApplication
+
+appname = os.path.dirname(os.path.dirname(os.path.abspath(__file__))).split(".")[0].split("/")[-1]
+app = WebApplication(appname, branch=branch, staging=staging)
+app.deploy()
