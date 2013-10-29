@@ -67,7 +67,7 @@ class WebApplication(object):
         f.write("LISTEN_ON_PORT=%d\n" % answer)
         
         answer = raw_input("Database password: [%s] " % self.name) or self.name
-        f.write("DATABASE_URL='postgres://%s:%s@localhost/%s\n" % (self.name, answer, self.name))
+        f.write("DATABASE_URL='postgres://%s:%s@localhost/%s'\n" % (self.name, answer, self.name))
 
         f.write("DJANGO_SECRET_KEY='%s'\n" % generate_key())
         f.close()
@@ -101,13 +101,13 @@ class WebApplication(object):
         Starts the webserver that is running the Django instance
         """
         command = self._webserver_command()
-        print command
+        print "Starting webserver with command: ", command
         subprocess.check_call(command, shell=True)
 
 
     def webserver_stop(self):
         command = "kill $(cat %s)" % os.path.join(os.environ["GIT_WORK_TREE"], "webserver.pid")
-        print command
+        print "Stopping webserver with command: ", command
         subprocess.check_call(command, shell=True)
 
     
@@ -116,7 +116,9 @@ class WebApplication(object):
         Restarts the webserver that is running the Django instance
         """
         try:
-            self.webserver_stop()
+            command = "kill -HUP $(cat %s)" % os.path.join(os.environ["GIT_WORK_TREE"], "webserver.pid")
+            subprocess.check_call(command, shell=True)
+            print "Stopped webserver with command: ", command
         except subprocess.CalledProcessError:
             self.webserver_start()
 
