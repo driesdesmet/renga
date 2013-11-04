@@ -21,7 +21,7 @@ class WebApplication(object):
         self.branch = branch
         self.wsgi_module = appname + ".wsgi"
         if self.branch == "master":
-            self.name = appanme
+            self.name = appname
         else:
             self.name = appname + "_" + self.branch
         
