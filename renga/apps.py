@@ -43,7 +43,8 @@ class WebApplication(object):
             if "VIRTUALENV" in os.environ:
                 os.environ["PATH"] = ":".join([os.path.join(os.environ["VIRTUALENV"], "bin"), os.environ["PATH"]])
             self.configured = True
-        return False
+        else:
+            self.configured = False
 
 
     def config(self):
