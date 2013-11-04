@@ -14,12 +14,16 @@ class ApplicationDirDoesNotExistError(Exception):
 
 class WebApplication(object):
 
-    def __init__(self, appname, branch="master", staging=False):
+    def __init__(self, appname, branch="master"):
         # Use GITREPOS envvar to locate the bare repo for this application or fallback to users' home directory.
         os.environ["GIT_DIR"] = os.path.join(os.environ.get("GITREPOS", os.environ["HOME"]), appname + ".git")
         
         self.branch = branch
         self.wsgi_module = appname + ".wsgi"
+        if self.branch = "master":
+            self.name = appanme
+        else:
+            self.name = appname + "_" + self.branch
         
         if staging:
             self.name = appname + "_staging"
