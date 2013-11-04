@@ -20,15 +20,12 @@ class WebApplication(object):
         
         self.branch = branch
         self.wsgi_module = appname + ".wsgi"
+        
         if self.branch == "master":
             self.name = appname
         else:
             self.name = appname + "_" + self.branch
         
-        if staging:
-            self.name = appname + "_staging"
-            self.branch = "develop"
-
         webappsdir = os.environ.get("WEBAPPS_DIR", os.path.join(os.environ["HOME"], "webapps"))
         git_work_tree = os.path.join(webappsdir, self.name)
         os.environ["GIT_WORK_TREE"] = git_work_tree
