@@ -37,7 +37,7 @@ setup(
     description=get_desc("renga"),
     long_description=get_readme(),
     packages=find_packages(),
-    scripts=['deploy', 'create', 'web_restart', 'web_start', 'web_stop'],
+    scripts=['deploy', 'create', 'web_restart', 'web_start', 'web_stop', 'app_info'],
     include_package_data=True,
     install_requires=read_file('requirements.txt'),
     classifiers=[
