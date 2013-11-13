@@ -12,13 +12,16 @@ def main():
     usage = "usage: %prog [options] <appname>"
     parser = OptionParser(usage)
     parser.add_option("-b", "--branch", default="master", help="Specify branch to use for deployment. [default]=master")
-    parser.add_option("-s", "--staging", action="store_true", help="Use the staging version of the app.")
+    parser.add_option("-s", "--staging", action="store_true", help="Use the develop branch of the app.")
     (options, args) = parser.parse_args()
 
     if len(args) != 1:
         parser.error("Specify exactly 1 argument, %d given." % len(args))
 
-    app = WebApplication(args[0], branch=options.branch, staging=options.staging)
+    if options.staging:
+        options.branch = "develop"
+
+    app = WebApplication(args[0], branch=options.branch)
     app.webserver_start()
 
 if __name__ == "__main__":
