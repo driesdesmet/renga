@@ -86,6 +86,13 @@ class WebApplication(object):
             subprocess.call(["mkdir", "-p", os.environ["GIT_WORK_TREE"]])
 
     
+    def info(self):
+        print "GIT_DIR: ", os.environ["GIT_DIR"]
+        print "BRANCH: ", self.branch
+        print "CONFIGFILE: ", self.configfile
+        print "CONFIGURED: ", self.configured
+    
+
     def _webserver_command(self):
         return ("gunicorn --chdir=%(chdir)s --log-file=%(logfile)s -b 127.0.0.1:%(port)s -D -w %(workers)s --pid %(pidfile)s %(wsgimodule)s:application" %
             {'chdir': os.environ["GIT_WORK_TREE"],

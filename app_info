@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 """
 Script to create a web application on this server. Call this like so:
-    $ web_stop -b develop appname 
+    $ app_info -b develop appname 
 """
 import sys
 from optparse import OptionParser
@@ -12,7 +12,7 @@ def main():
     usage = "usage: %prog [options] <appname>"
     parser = OptionParser(usage)
     parser.add_option("-b", "--branch", default="master", help="Specify branch to use for deployment. [default]=master")
-    parser.add_option("-s", "--staging", action="store_true", help="Use the staging version of the app.")
+    parser.add_option("-s", "--staging", action="store_true", help="Use the develop branch of the app.")
     (options, args) = parser.parse_args()
 
     if len(args) != 1:
@@ -22,7 +22,7 @@ def main():
         options.branch = "develop"
 
     app = WebApplication(args[0], branch=options.branch)
-    app.webserver_stop()
+    app.info()
 
 if __name__ == "__main__":
     main()
